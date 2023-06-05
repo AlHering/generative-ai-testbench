@@ -7,3 +7,4 @@ SQLAlchemy==2.0.15
 chromadb==0.3.23
 python-dotenv==1.0.0
 pydantic==1.10.8
+duckdb==0.8.0
