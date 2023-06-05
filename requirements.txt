@@ -1,0 +1,8 @@
+langchain==0.0.190
+openai==0.27.7
+llama-cpp-python==0.1.50
+gpt4all==0.2.3
+urllib3==2.0.2
+SQLAlchemy==2.0.15
+chromadb==0.3.23
+python-dotenv==1.0.0
