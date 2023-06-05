@@ -6,3 +6,4 @@ urllib3==2.0.2
 SQLAlchemy==2.0.15
 chromadb==0.3.23
 python-dotenv==1.0.0
+pydantic==1.10.8
