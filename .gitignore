@@ -161,5 +161,8 @@ cython_debug/
 data/
 docs/literature
 docs/todo
-data/aura_cognitive_architecture.db
+data/*.db
 configuration/*.env
+machine_learning_models/
+!machine_learning_models/LORAS/mount ML LoRAs here.txt
+!machine_learning_models/MODELS/mount ML models here.txt
