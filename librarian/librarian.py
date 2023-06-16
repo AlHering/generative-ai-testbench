@@ -38,10 +38,10 @@ class Librarian(object):
                 if any(loader_option.endswith(ext) for loader_option in langchain_utility.DOCUMENT_LOADERS):
                     documents.append((os.path.join(root, file), ext))
         with Pool(processes=os.cpu_count()) as pool:
-            with tqdm(total=len(documents), desc='(Re)loading folder contents...', ncols=80) as pbar:
+            with tqdm(total=len(documents), desc='(Re)loading folder contents...', ncols=80) as progress_bar:
                 for i, document_contents in enumerate(pool.imap_unordered(self.reload_document, documents)):
                     contents.extend(document_contents)
-                    pbar.update(i)
+                    progress_bar.update(i)
         self.add_contents_to_db(contents)
 
     def reload_document(self, document_path: str, extension: str = None) -> List[Document]:
