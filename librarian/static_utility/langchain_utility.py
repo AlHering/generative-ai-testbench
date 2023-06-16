@@ -6,6 +6,7 @@
 ****************************************************
 """
 import os
+from langchain import document_loaders, document_transformers
 from typing import List
 from chromadb.config import Settings
 from pydantic import BaseModel
@@ -63,3 +64,31 @@ def add_documents_to_chromadb(chroma_db: Chroma, documents: List[str], docs_meta
     if docs_metadata is not None:
         kwargs["metadatas"] = docs_metadata
     collection.add(**kwargs)
+
+
+"""
+Data Loaders
+"""
+DOCUMENT_LOADERS = {
+    ".csv": document_loaders.CSVLoader,
+    ".doc": document_loaders.UnstructuredWordDocumentLoader,
+    ".docx": document_loaders.UnstructuredWordDocumentLoader,
+    ".enex": document_loaders.EverNoteLoader,
+    ".eml": document_loaders.MyElmLoader,
+    ".epub": document_loaders.UnstructuredEPubLoader,
+    ".html": document_loaders.UnstructuredHTMLLoader,
+    ".md": document_loaders.UnstructuredMarkdownLoader,
+    ".odt": document_loaders.UnstructuredODTLoader,
+    ".pdf": document_loaders.PyMuPDFLoader,
+    ".ppt": document_loaders.UnstructuredPowerPointLoader,
+    ".pptx": document_loaders.UnstructuredPowerPointLoader,
+    ".txt": document_loaders.TextLoader,
+    ".json": document_loaders.JSONLoader
+}
+
+
+API_LOADERS = {
+    "arxiv": document_loaders.ArxivLoader,
+    "azure_blob": document_loaders.AzureBlobStorageFileLoader,
+    "onedrive": document_loaders.OneDriveFileLoader
+}
