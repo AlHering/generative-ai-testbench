@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 ****************************************************
-*           langchain_testbench:librarian                 
+*             generative_ai_testbench                
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
