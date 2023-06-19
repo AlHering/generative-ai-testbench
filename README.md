@@ -1,2 +1,2 @@
-# langchain_testbench
-Testbench for projects based on Langchain (https://docs.langchain.com/docs/) 
+# Generative AI Testbench
+Testbench for projects based on Generative AI Frameworks like Langchain (https://docs.langchain.com/docs/) or MS Guidance (https://github.com/microsoft/guidance/tree/main/docs).
