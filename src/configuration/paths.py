@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 ****************************************************
-*           aura-cognitive-architecture
+*             generative_ai_testbench                
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
