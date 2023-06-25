@@ -7,8 +7,8 @@
 """
 import os
 from dotenv import load_dotenv
-import paths as PATHS
-import urls as URLS
+from . import paths as PATHS
+from . import urls as URLS
 
 
 """
