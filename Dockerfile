@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y apt-utils \
     make build-essential wget curl git nano ffmpeg libsm6 libxext6 \
     p7zip-full p7zip-rar \
     python3-pip python3-venv \
+    python3-notebook jupyter jupyter-core \ 
     pkg-config libcairo2-dev libjpeg-dev libgif-dev && apt-get clean -y
 
 
@@ -28,6 +29,9 @@ RUN if [ ! -d "venv" ]; \
     then \
     python3 -m venv venv; \
     fi 
+
+# Install as kernel
+RUN ipykernel install --user --name .venv 
 
 # Networking
 ENV PORT 7860
