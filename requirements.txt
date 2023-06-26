@@ -12,3 +12,4 @@ guidance==0.0.61
 protobuf==3.20.3
 nvitop==1.1.2
 jupyter==1.0.0
+ipykernel==6.23.3
