@@ -38,7 +38,7 @@ EXPOSE $PORT
 RUN source /project/venv && python -m pip install -r /project/requirements.txt
 
 # Install as kernel
-RUN ipykernel install --user --name $VENV_DIR
+RUN ipython kernel install --user --name=venv
 
 # Start text-generation-webui
 CMD ["/bin/bash", "run.sh"]
