@@ -11,3 +11,4 @@ duckdb==0.8.0
 guidance==0.0.61
 protobuf==3.20.3
 nvitop==1.1.2
+jupyter==1.0.0
