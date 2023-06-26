@@ -28,10 +28,7 @@ RUN apt-get update && apt-get install -y apt-utils \
 RUN if [ ! -d "venv" ]; \
     then \
     python3 -m venv venv; \
-    fi 
-
-# Install as kernel
-RUN ipykernel install --user --name /project/venv 
+    fi  
 
 # Networking
 ENV PORT 7860
@@ -39,6 +36,9 @@ EXPOSE $PORT
 
 # Setting up text-generation-webui
 RUN source /project/venv && python -m pip install -r /project/requirements.txt
+
+# Install as kernel
+RUN ipykernel install --user --name $VENV_DIR
 
 # Start text-generation-webui
 CMD ["/bin/bash", "run.sh"]
