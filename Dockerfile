@@ -31,7 +31,7 @@ RUN if [ ! -d "venv" ]; \
     fi 
 
 # Install as kernel
-RUN ipykernel install --user --name .venv 
+RUN ipykernel install --user --name /project/venv 
 
 # Networking
 ENV PORT 7860
