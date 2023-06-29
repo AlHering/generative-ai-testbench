@@ -24,6 +24,7 @@ printf "Handling main webui requirements..."
 printf "\n%s\n" "${delimiter}"
 
 python -m pip install -r requirements.txt
+#CMAKE_ARGS="-DLLAMA_CUBLAS=on" FORCE_CMAKE=1 python -m pip install --upgrade llama-cpp-python
 
 printf "\n%s\n" "${delimiter}"
 printf "Finished installation"
