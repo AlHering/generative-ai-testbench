@@ -1,7 +1,4 @@
 #!/bin/bash
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $SCRIPT_DIR
-
 printf "\n%s\n" "${delimiter}"
 printf "Activating conda environment"
 printf "\n%s\n" "${delimiter}"
@@ -27,8 +24,6 @@ printf "Handling main webui requirements..."
 printf "\n%s\n" "${delimiter}"
 
 python -m pip install -r requirements.txt
-
-cd "${SCRIPT_DIR}"
 
 printf "\n%s\n" "${delimiter}"
 printf "Finished installation"
