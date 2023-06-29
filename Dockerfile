@@ -12,6 +12,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY . project/
 WORKDIR /project
 ENV RUNNING_IN_DOCKER True
+ENV CONDA_DIR "/project/conda"
 ENV VENV_DIR "/project/venv"
 
 # Install prerequisits
@@ -24,18 +25,22 @@ RUN apt add-repository -y ppa:deadsnakes/ppa apt-get update && apt-get install -
     pkg-config libcairo2-dev libjpeg-dev libgif-dev && apt-get clean -y
 
 
-# Create venv
-RUN if [ ! -d "venv" ]; \
-    then \
-    python3.10 -m venv venv; \
-    fi  
+# Download and install miniconda
+RUN curl -Lk "https://repo.anaconda.com/miniconda/Miniconda3-py310_23.1.0-1-Linux-x86_64.sh" > "miniconda_installer.sh" \
+    && chmod u+x "miniconda_installer.sh" \
+    && /bin/bash "miniconda_installer.sh" -b -p "$CONDA_DIR" \
+    && echo "Installed miniconda version:" \
+    && "${CONDA_DIR}/bin/conda" --version
+
+# Create conda environment
+RUN "${CONDA_DIR}/bin/conda" create -y -k --prefix "$VENV_DIR" python=3.10
 
 # Networking
 ENV PORT 7860
 EXPOSE $PORT
 
 # Setting up text-generation-webui
-RUN source /project/venv && python -m pip install -r /project/requirements.txt
+RUN source /project/venv && python -m pip install --upgrade pip && python -m pip install -r /project/requirements.txt
 
 # Install as kernel
 RUN ipython kernel install --user --name=venv
