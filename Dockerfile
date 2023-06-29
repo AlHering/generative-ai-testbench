@@ -15,11 +15,11 @@ ENV RUNNING_IN_DOCKER True
 ENV VENV_DIR "/project/venv"
 
 # Install prerequisits
-RUN apt-get update && apt-get install -y apt-utils \
+RUN apt add-repository -y ppa:deadsnakes/ppa apt-get update && apt-get install -y apt-utils \
     software-properties-common \
     make build-essential wget curl git nano ffmpeg libsm6 libxext6 \
     p7zip-full p7zip-rar \
-    python3-pip python3-venv \
+    python3.10-full python-is-python3 \
     python3-notebook jupyter jupyter-core \ 
     pkg-config libcairo2-dev libjpeg-dev libgif-dev && apt-get clean -y
 
@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y apt-utils \
 # Create venv
 RUN if [ ! -d "venv" ]; \
     then \
-    python3 -m venv venv; \
+    python3.10 -m venv venv; \
     fi  
 
 # Networking
