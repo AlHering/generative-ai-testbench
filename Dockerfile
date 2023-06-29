@@ -39,8 +39,8 @@ RUN "${CONDA_DIR}/bin/conda" create -y -k --prefix "$VENV_DIR" python=3.10
 ENV PORT 7860
 EXPOSE $PORT
 
-# Setting up text-generation-webui
-RUN source /project/venv && python -m pip install --upgrade pip && python -m pip install -r /project/requirements.txt
+# Setting up conda environment
+RUN /bin/bash /project/install.sh
 
 # Install as kernel
 RUN ipython kernel install --user --name=venv
