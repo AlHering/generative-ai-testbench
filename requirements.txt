@@ -1,7 +1,7 @@
 langchain==0.0.197
 openai==0.27.7
 gpt4all==0.3.4
-llama-cpp-python==0.1.50
+llama-cpp-python==0.1.67
 urllib3==2.0.2
 SQLAlchemy==2.0.15
 chromadb==0.3.23
