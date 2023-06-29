@@ -24,10 +24,19 @@ prompt = PromptTemplate(template=promt_template, input_variables=["question"])
 callback_manager = CallbackManager(
     [StreamingStdOutCallbackHandler()])
 
+# "orca_mini_7B-GGML/orca-mini-7b.ggmlv3.q5_0.bin"
+# working with->
+# "vicuna-7B-v1.3-GGML/vicuna-7b-v1.3.ggmlv3.q5_0.bin"
+# working with->
+# "/media/linux/Data II/text_generation_models/eachadea_ggml-vicuna-7b-1.1/ggml-vicuna-7b-1.1-q4_0.bin"
+# working with-> llama-cpp-python==0.1.48 pydantic==1.9.0 typing-extensions>=4.5.0 langchain==0.0.197
+# "/media/linux/Data II/text_generation_models/eachadea_ggml-vicuna-7b-1.1/ggml-vicuna-7b-1.1-q4_1.bin"
+# working with-> llama-cpp-python==0.1.48 pydantic==1.9.0 typing-extensions>=4.5.0 langchain==0.0.197
+
 # Setup central LLM
 llm = LlamaCpp(
     model_path=os.path.join(cfg.PATHS.TEXTGENERATION_MODEL_PATH,
-                            "eachadea_ggml-vicuna-7b-1.1/ggml-vicuna-7b-1.1-q4_0.bin"),
+                            "vicuna-7B-v1.3-GGML/vicuna-7b-v1.3.ggmlv3.q5_0.bin"),
     callback_manager=callback_manager,
     verbose=True)
 
