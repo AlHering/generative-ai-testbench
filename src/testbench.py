@@ -7,6 +7,7 @@
 """
 import os
 from configuration import configuration as cfg
+from pydantic.error_wrappers import ValidationError
 from langchain.llms import LlamaCpp
 from langchain import PromptTemplate, LLMChain
 from langchain.callbacks.manager import CallbackManager
@@ -24,22 +25,25 @@ prompt = PromptTemplate(template=promt_template, input_variables=["question"])
 callback_manager = CallbackManager(
     [StreamingStdOutCallbackHandler()])
 
-# "orca_mini_7B-GGML/orca-mini-7b.ggmlv3.q5_0.bin"
-# working with->
-# "vicuna-7B-v1.3-GGML/vicuna-7b-v1.3.ggmlv3.q5_0.bin"
-# working with->
+# os.path.join(cfg.PATHS.TEXTGENERATION_MODEL_PATH, "vicuna-7B-v1.3-GGML/vicuna-7b-v1.3.ggmlv3.q5_0.bin")
+# working with -> lama-cpp-python==0.1.64 langchain==0.0.197 pygpt4all==1.1.0 pydantic==1.10.9 typing-inspect==0.9.0 typing_extensions==4.7.0
+# os.path.join(cfg.PATHS.TEXTGENERATION_MODEL_PATH, "vicuna-7B-v1.3-GGML/vicuna-7b-v1.3.ggmlv3.q5_0.bin")
+# working with -> lama-cpp-python==0.1.64 langchain==0.0.197 pygpt4all==1.1.0 pydantic==1.10.9 typing-inspect==0.9.0 typing_extensions==4.7.0
 # "/media/linux/Data II/text_generation_models/eachadea_ggml-vicuna-7b-1.1/ggml-vicuna-7b-1.1-q4_0.bin"
-# working with-> llama-cpp-python==0.1.48 pydantic==1.9.0 typing-extensions>=4.5.0 langchain==0.0.197
+# working with -> llama-cpp-python==0.1.48 pydantic==1.9.0 typing-inspect==0.8.0 typing-extensions>=4.5.0 langchain==0.0.197
+# working with -> lama-cpp-python==0.1.48 langchain==0.0.173 pygpt4all==1.1.0
 # "/media/linux/Data II/text_generation_models/eachadea_ggml-vicuna-7b-1.1/ggml-vicuna-7b-1.1-q4_1.bin"
-# working with-> llama-cpp-python==0.1.48 pydantic==1.9.0 typing-extensions>=4.5.0 langchain==0.0.197
+# working with -> llama-cpp-python==0.1.48 pydantic==1.9.0 typing-inspect==0.8.0 typing-extensions=4.5.0 pygpt4all==1.1.0 langchain==0.0.197
+# working with -> lama-cpp-python==0.1.48 langchain==0.0.173 pygpt4all==1.1.0
+# os.path.join(cfg.PATHS.TEXTGENERATION_MODEL_PATH, "orca_mini_7B-GGML/orca-mini-7b.ggmlv3.q4_1.bin")
+#
 
 # Setup central LLM
 llm = LlamaCpp(
     model_path=os.path.join(cfg.PATHS.TEXTGENERATION_MODEL_PATH,
-                            "vicuna-7B-v1.3-GGML/vicuna-7b-v1.3.ggmlv3.q5_0.bin"),
+                            "orca_mini_7B-GGML/orca-mini-7b.ggmlv3.q4_1.bin"),
     callback_manager=callback_manager,
     verbose=True)
-
 
 # Setup basic chain
 llm_chain = LLMChain(prompt=prompt, llm=llm)
