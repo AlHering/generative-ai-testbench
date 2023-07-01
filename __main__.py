@@ -5,13 +5,8 @@
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
-import os
-from dotenv import load_dotenv
-from . import paths as PATHS
-from . import urls as URLS
+from src.image_interogator.image_interogator import run_process
 
 
-"""
-ENVIRONMENT FILE
-"""
-ENV = load_dotenv(os.path.join(PATHS.PACKAGE_PATH, ".env"))
+if __name__ == "__main__":
+    run_process()

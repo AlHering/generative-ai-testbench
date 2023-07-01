@@ -10,7 +10,7 @@ from typing import List, Tuple
 from langchain.docstore.document import Document
 from multiprocessing import Pool
 from tqdm import tqdm
-from static_utility import langchain_utility
+from src.utility import langchain_utility
 
 
 class Librarian(object):

@@ -11,7 +11,7 @@ from typing import List
 from chromadb.config import Settings
 from pydantic import BaseModel
 from langchain.vectorstores import Chroma
-from hashing_utility import hash_text_with_sha256
+from src.utility.hashing_utility import hash_text_with_sha256
 
 
 """
