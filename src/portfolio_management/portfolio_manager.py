@@ -5,9 +5,10 @@
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
+from langchain.agents import Tool, AgentExecutor, BaseMultiActionAgent
 
 
-class PortfolioManager(object):
+class PortfolioManager(BaseMultiActionAgent):
     """
     Class, representing a Portfolio Manager Agent.
 
