@@ -6,7 +6,8 @@
 ****************************************************
 """
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Any
+from langchain.chains import RetrievalQA
 from langchain.docstore.document import Document
 from multiprocessing import Pool
 from tqdm import tqdm
@@ -21,11 +22,20 @@ class Librarian(object):
     def __init__(self, profile: dict) -> None:
         """
         Initiation method.
-        :param profile: Profile, configuring a librarian agent.
+        :param profile: Profile, configuring a librarian agent. The profile should be a nested dictionary of the form
+            'chromadb_settings': ChromaDB Settings.
+            'embedding':
+                'embedding_model': Embedding model.
+                'embedding_function': Embedding function.
+            'retrieval': 
+                'source_chunks': Source chunks.
         """
         self.profile = profile
-        self.chroma_db = langchain_utility.get_or_create_chromadb(
-            profile["db"])
+        self.vector_db = langchain_utility.get_or_create_chromadb(
+            profile["chromadb_settings"], profile["embedding"]["embedding_function"])
+        self.retriever = self.vector_db.as_retriever(
+            search_kwargs={"k": profile["retrieval"]["source_chunks"]})
+        self.llm = None
 
     def reload_folder(self, folder: str) -> None:
         """
@@ -40,7 +50,7 @@ class Librarian(object):
                 if any(loader_option.endswith(ext) for loader_option in langchain_utility.DOCUMENT_LOADERS):
                     documents.append((os.path.join(root, file), ext))
         with Pool(processes=os.cpu_count()) as pool:
-            with tqdm(total=len(documents), desc='(Re)loading folder contents...', ncols=80) as progress_bar:
+            with tqdm(total=len(documents), desc="(Re)loading folder contents...", ncols=80) as progress_bar:
                 for index, document_contents in enumerate(pool.imap_unordered(self.reload_document, documents)):
                     content_batches.append(document_contents)
                     progress_bar.update(index)
@@ -80,4 +90,21 @@ class Librarian(object):
         :param document_metadata: Metadata entries.
         """
         langchain_utility.add_documents_to_chromadb(
-            self.chroma_db, document_contents, document_metadata)
+            self.vector_db, document_contents, document_metadata)
+
+    def query(self, query: str, include_source: bool = True, override_llm: Any = None, override_reciever: Any = None) -> Tuple[str, List[Document]]:
+        """
+        Method for querying for answer.
+        :param query: Query.
+        :param include_source: Flag, declaring whether to show source documents.
+        :param override_llm: Optional LLM to override standard.
+        :param override_retriever: Optional Retriever to override standard.
+        :return: Answer and list of source documents as tuple.
+        """
+        qa = RetrievalQA.from_chain_type(
+            llm=self.llm if override_llm is None else override_llm,
+            retriever=self.retriever if override_reciever is None else override_reciever,
+            return_source_documents=include_source)
+
+        response = qa(query)
+        return response["result"], response["source_documents"] if include_source else []
