@@ -30,13 +30,14 @@ ChromaDB
 """
 
 
-def get_or_create_chromadb(chroma_db_settings: Settings, embedding_model: BaseModel) -> Chroma:
+def get_or_create_chromadb(chroma_db_settings: Settings, embedding_function: Any) -> Chroma:
     """
     Function for acquiring ChromaDB instance.
     :param chroma_db_settings: ChromaDB Settings object.
-    :param embedding_model: Embedding model.
+    :param embedding_function: Embedding function.
+    :return: ChromaDB instance.
     """
-    return Chroma(persist_directory=chroma_db_settings.persist_directory, embedding_function=embedding_model, client_settings=chroma_db_settings)
+    return Chroma(persist_directory=chroma_db_settings.persist_directory, embedding_function=embedding_function, client_settings=chroma_db_settings)
 
 
 def create_collection(chroma_db: Chroma, collection_name: str, metadata: dict = None) -> None:
