@@ -7,11 +7,22 @@
 """
 import os
 from langchain import document_loaders, document_transformers
-from typing import List
+from typing import List, Any, Optional
 from chromadb.config import Settings
 from pydantic import BaseModel
 from langchain.vectorstores import Chroma
 from src.utility.hashing_utility import hash_text_with_sha256
+
+
+def get_or_create_vectordb(db_type: str = "chromadb", db_kwargs: Optional[Any] = {}) -> Any:
+    """
+    Method for getting or creating a vector database.
+    :param db_type: DB type.
+    :param creation_kwargs: Keywords arguments for DB creation or retrieval.
+    :return: Vector DB instance.
+    """
+    if db_type == "chromadb":
+        return get_or_create_chromadb(**db_kwargs)
 
 
 """
