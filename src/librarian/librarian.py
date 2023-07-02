@@ -91,3 +91,20 @@ class Librarian(object):
         """
         langchain_utility.add_documents_to_chromadb(
             self.vector_db, document_contents, document_metadata)
+
+    def query(self, query: str, include_source: bool = True, override_llm: Any = None, override_reciever: Any = None) -> Tuple[str, List[Document]]:
+        """
+        Method for querying for answer.
+        :param query: Query.
+        :param include_source: Flag, declaring whether to show source documents.
+        :param override_llm: Optional LLM to override standard.
+        :param override_retriever: Optional Retriever to override standard.
+        :return: Answer and list of source documents as tuple.
+        """
+        qa = RetrievalQA.from_chain_type(
+            llm=self.llm if override_llm is None else override_llm,
+            retriever=self.retriever if override_reciever is None else override_reciever,
+            return_source_documents=include_source)
+
+        response = qa(query)
+        return response["result"], response["source_documents"] if include_source else []
