@@ -8,7 +8,7 @@
 from typing import List, Any
 from langchain.agents import Tool, AgentExecutor, BaseMultiActionAgent
 from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+from langchain.chains import LLMChain, LLMMathChain
 
 
 class ResearchAnalyst(BaseMultiActionAgent):
@@ -23,12 +23,14 @@ class ResearchAnalyst(BaseMultiActionAgent):
     - 
     """
 
-    def __init__(self, general_llm: Any) -> None:
+    def __init__(self, general_llm: Any, math_llm: Any = None) -> None:
         """
         Initiation method.
         :param general_llm: General LLM.
+        :param math_llm: Optional Math LLM.
         """
         self.general_llm = general_llm
+        self.math_llm = general_llm if math_llm is None else math_llm
         self.tools = self._initiate_tools()
 
     """
@@ -41,6 +43,7 @@ class ResearchAnalyst(BaseMultiActionAgent):
         """
         return [
             self._initiate_general_llm_tool,
+            self._initiate_math_llm_tool
         ]
 
     def _initiate_general_llm_tool(self) -> Tool:
@@ -57,4 +60,14 @@ class ResearchAnalyst(BaseMultiActionAgent):
             name="General Language Model",
             func=llm_chain.run,
             description="Use this tool for general purpose question answering and logic."
+        )
+
+    def _initiate_math_llm_tool(self) -> Tool:
+        """
+        Internal method for initiating math LLM tool.
+        """
+        return Tool(
+            name="Calculator",
+            func=LLMMathChain(llm=self.self.math_llm).run,
+            description="Use this tool for questions which involve math or calculations."
         )
