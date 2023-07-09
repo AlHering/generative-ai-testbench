@@ -30,8 +30,8 @@ INTEROGATION_MODELS = {
 }
 
 
-class ImageCaptionTool(BaseTool):
-    name = "Image captioner"
+class ImageInterogationTool(BaseTool):
+    name = "Image interogator"
     description = "Use this tool when given the path to an image that you would like to be described. " \
                   "It will return a simple caption describing the image."
 
@@ -163,7 +163,7 @@ def detect_objects(image_path):
 
 
 # initialize the agent
-tools = [ImageCaptionTool(), ObjectDetectionTool()]
+tools = [ImageInterogationTool(), ObjectDetectionTool()]
 
 conversational_memory = ConversationBufferWindowMemory(
     memory_key="chat_history",
