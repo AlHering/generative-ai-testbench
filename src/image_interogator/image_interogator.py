@@ -17,8 +17,17 @@ from langchain.llms import LlamaCpp
 from langchain import PromptTemplate, LLMChain
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
+
+
+# Taken from https://github.com/pharmapsychotic/clip-interrogator
+INTEROGATION_MODELS = {
+    'blip-base': 'Salesforce/blip-image-captioning-base',   # 990MB
+    'blip-large': 'Salesforce/blip-image-captioning-large',  # 1.9GB
+    'blip2-2.7b': 'Salesforce/blip2-opt-2.7b',              # 15.5GB
+    'blip2-flan-t5-xl': 'Salesforce/blip2-flan-t5-xl',      # 15.77GB
+    'git-large-coco': 'microsoft/git-large-coco',           # 1.58GB
+}
 
 
 class ImageCaptionTool(BaseTool):
