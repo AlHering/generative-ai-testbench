@@ -9,7 +9,7 @@
 import torch
 import os
 from langchain.tools import BaseTool
-from transformers import BlipProcessor, BlipForConditionalGeneration, DetrImageProcessor, DetrForObjectDetection
+from transformers import BlipProcessor, BlipForConditionalGeneration, DetrImageProcessor, DetrForObjectDetection, AutoProcessor, Blip2ForConditionalGeneration, AutoModelForCausalLM
 from PIL import Image
 from langchain.agents import initialize_agent
 from src.configuration import configuration as cfg
@@ -35,18 +35,28 @@ class ImageCaptionTool(BaseTool):
     description = "Use this tool when given the path to an image that you would like to be described. " \
                   "It will return a simple caption describing the image."
 
-    def _run(self, img_path):
+    def _run(self, img_path, model):
         image = Image.open(img_path).convert("RGB")
 
         model_name = "Salesforce/blip-image-captioning-large"
-        device = "cpu"  # cuda
+        device = "cpu"  # cuda#
+        self.dtype = torch.float16 if device == 'cuda' else torch.float32
 
-        processor = BlipProcessor.from_pretrained(model_name)
-        model = BlipForConditionalGeneration.from_pretrained(
-            model_name).to(device)
+        model_path = INTEROGATION_MODELS[model]
+        if model.startswith('git-'):
+            interogator = AutoModelForCausalLM.from_pretrained(
+                model_path, torch_dtype=torch.float32).to(device)
+        elif model.startswith('blip2-'):
+            interogator = Blip2ForConditionalGeneration.from_pretrained(
+                model_path, torch_dtype=self.dtype).to(device)
+        else:
+            interogator = BlipForConditionalGeneration.from_pretrained(
+                model_path, torch_dtype=self.dtype).to(device)
+
+        processor = AutoProcessor.from_pretrained(model_name)
 
         inputs = processor(image, return_tensors="pt").to(device)
-        output = model.generate(**inputs, max_new_tokens=20)
+        output = interogator.generate(**inputs, max_new_tokens=20)
 
         caption = processor.decode(output[0], skip_special_tokens=True)
 
