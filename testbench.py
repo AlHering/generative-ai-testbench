@@ -6,7 +6,7 @@
 ****************************************************
 """
 import os
-from configuration import configuration as cfg
+from src.configuration import configuration as cfg
 from pydantic.error_wrappers import ValidationError
 from langchain.llms import LlamaCpp
 from langchain import PromptTemplate, LLMChain
