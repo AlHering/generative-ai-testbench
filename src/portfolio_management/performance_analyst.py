@@ -33,3 +33,9 @@ class PerformanceAnalyst(object):
         Method for comparing backtesting results.
         """
         pass
+
+    def evaluate_trading_decisions(self) -> dict:
+        """
+        Method for evaluating trading decisions.
+        """
+        pass
