@@ -21,3 +21,9 @@ class PerformanceAnalyst(object):
         Initiation method.
         """
         pass
+
+    def run_backtest(self) -> dict:
+        """
+        Method for running backtest.
+        """
+        pass
