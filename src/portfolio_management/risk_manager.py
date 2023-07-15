@@ -22,20 +22,20 @@ class RiskManager(object):
         """
         pass
 
-    def calculate_sector_risks(self) -> dict:
+    def evaluate_sector_risks(self) -> dict:
         """
-        Method for calculating sector risks.
-        """
-        pass
-
-    def calculate_location_risks(self) -> dict:
-        """
-        Method for calculating location risks.
+        Method for evaluating sector risks.
         """
         pass
 
-    def calculate_cluster_risks(self) -> dict:
+    def evaluate_location_risks(self) -> dict:
         """
-        Method for calculating cluster risks.
+        Method for evaluating location risks.
+        """
+        pass
+
+    def evaluate_cluster_risks(self) -> dict:
+        """
+        Method for evaluating cluster risks.
         """
         pass
