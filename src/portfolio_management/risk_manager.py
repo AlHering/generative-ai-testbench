@@ -21,3 +21,9 @@ class RiskManager(object):
         Initiation method.
         """
         pass
+
+    def calculate_sector_risks(self) -> dict:
+        """
+        Method for calculating sector risks.
+        """
+        pass
