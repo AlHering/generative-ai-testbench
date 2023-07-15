@@ -33,3 +33,9 @@ class RiskManager(object):
         Method for calculating location risks.
         """
         pass
+
+    def calculate_cluster_risks(self) -> dict:
+        """
+        Method for calculating cluster risks.
+        """
+        pass
