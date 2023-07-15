@@ -15,4 +15,9 @@ class ComplianceOfficer(object):
     They monitor and enforce compliance with industry regulations, internal policies, and client guidelines. 
     Compliance officers help mitigate legal and reputational risks associated with portfolio management activities.
     """
-    pass
+
+    def __init__(self) -> None:
+        """
+        Initiation method.
+        """
+        pass

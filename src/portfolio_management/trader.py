@@ -14,4 +14,9 @@ class Trader(object):
     Responsiblities: Traders execute the buying and selling of securities within the portfolio. They closely monitor market conditions, execute trades according to the portfolio manager's instructions, and manage trade execution costs. 
     Traders often use trading platforms and financial tools to facilitate efficient trade execution.
     """
-    pass
+
+    def __init__(self) -> None:
+        """
+        Initiation method.
+        """
+        pass

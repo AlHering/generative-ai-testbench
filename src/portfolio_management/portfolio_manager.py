@@ -15,4 +15,9 @@ class PortfolioManager(BaseMultiActionAgent):
     Responsiblities: The portfolio manager is responsible for overseeing the investment strategy and decision-making process. 
     They set portfolio objectives, define asset allocation strategies, and make investment decisions based on market analysis and client goals.
     """
-    pass
+
+    def __init__(self) -> None:
+        """
+        Initiation method.
+        """
+        pass

@@ -15,4 +15,9 @@ class PerformanceAnalyst(object):
     They measure portfolio returns, compare them to benchmarks, and generate performance reports for internal and external stakeholders. 
     Performance analysts help assess the effectiveness of investment strategies and identify areas for improvement.
     """
-    pass
+
+    def __init__(self) -> None:
+        """
+        Initiation method.
+        """
+        pass

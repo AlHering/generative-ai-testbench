@@ -15,4 +15,9 @@ class QuantitativeAnalyst(object):
     identify patterns, and make data-driven investment decisions. 
     They use statistical analysis, programming, and computational tools to analyze large datasets and optimize portfolio performance.
     """
-    pass
+
+    def __init__(self) -> None:
+        """
+        Initiation method.
+        """
+        pass

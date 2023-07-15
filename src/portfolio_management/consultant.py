@@ -13,4 +13,9 @@ class Consultant(object):
 
     Responsiblities: A consultant resembles an expert in a specific field and supports decision making with specific domain knowledge.
     """
-    pass
+
+    def __init__(self) -> None:
+        """
+        Initiation method.
+        """
+        pass

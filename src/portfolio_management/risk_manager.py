@@ -15,4 +15,9 @@ class RiskManager(object):
     They use quantitative models and risk management techniques to evaluate the potential downside and volatility of investments, 
     implement risk mitigation strategies, and ensure compliance with risk management policies.
     """
-    pass
+
+    def __init__(self) -> None:
+        """
+        Initiation method.
+        """
+        pass
