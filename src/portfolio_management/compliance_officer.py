@@ -21,3 +21,9 @@ class ComplianceOfficer(object):
         Initiation method.
         """
         pass
+
+    def evaluate_sustainability(self) -> dict:
+        """
+        Method for evaluating sustainability.
+        """
+        pass
