@@ -27,3 +27,9 @@ class RiskManager(object):
         Method for calculating sector risks.
         """
         pass
+
+    def calculate_location_risks(self) -> dict:
+        """
+        Method for calculating location risks.
+        """
+        pass
