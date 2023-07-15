@@ -27,3 +27,9 @@ class PerformanceAnalyst(object):
         Method for running backtest.
         """
         pass
+
+    def compare_backtesting_results(self) -> dict:
+        """
+        Method for comparing backtesting results.
+        """
+        pass
