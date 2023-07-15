@@ -15,4 +15,9 @@ class ClientRelationshipManager(object):
     They communicate with clients to understand their investment objectives, provide updates on portfolio performance, and address any concerns or inquiries.
     Client relationship managers may also be responsible for client acquisition and retention.
     """
-    pass
+
+    def __init__(self) -> None:
+        """
+        Initiation method.
+        """
+        pass
