@@ -37,3 +37,4 @@ class Trader(object):
         """
         Method for loading trading backend.
         """
+        pass
