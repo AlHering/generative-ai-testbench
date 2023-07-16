@@ -27,3 +27,9 @@ class ComplianceOfficer(object):
         Method for evaluating sustainability.
         """
         pass
+
+    def evaluate_public_relations(self) -> dict:
+        """
+        Method for evaluating PR.
+        """
+        pass
