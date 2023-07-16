@@ -33,3 +33,9 @@ class ComplianceOfficer(object):
         Method for evaluating PR.
         """
         pass
+
+    def evaluate_legal_issues(self) -> dict:
+        """
+        Method for evaluating legal issues.
+        """
+        pass
