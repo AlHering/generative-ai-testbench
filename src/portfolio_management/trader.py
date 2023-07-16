@@ -32,3 +32,8 @@ class Trader(object):
         Method for selling a position.
         """
         pass
+
+    def load_trading_backend(self) -> None:
+        """
+        Method for loading trading backend.
+        """
