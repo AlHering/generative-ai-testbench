@@ -20,3 +20,9 @@ class Trader(object):
         Initiation method.
         """
         pass
+
+    def handle_sell(self) -> None:
+        """
+        Method for selling a position.
+        """
+        pass
