@@ -26,3 +26,9 @@ class Trader(object):
         Method for selling a position.
         """
         pass
+
+    def handle_buy(self) -> None:
+        """
+        Method for selling a position.
+        """
+        pass
