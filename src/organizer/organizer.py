@@ -17,3 +17,15 @@ class Organizer(object):
         Initiation method.
         """
         pass
+
+    def import_document(path: str) -> None:
+        """
+        Method for importing document from path.
+        """
+        pass
+
+    def embed_text(text: str) -> None:
+        """
+        Method for embedding text.
+        """
+        pass
