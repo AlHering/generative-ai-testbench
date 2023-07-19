@@ -21,12 +21,14 @@ class Organizer(object):
     def import_document(self, path: str) -> None:
         """
         Method for importing document from path.
+        :param path: Path to document.
         """
         pass
 
     def embed_text(self, text: str) -> None:
         """
         Method for embedding text.
+        :param text: Text to embed.
         """
         pass
 
