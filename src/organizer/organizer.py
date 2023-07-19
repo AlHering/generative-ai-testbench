@@ -18,19 +18,19 @@ class Organizer(object):
         """
         pass
 
-    def import_document(path: str) -> None:
+    def import_document(self, path: str) -> None:
         """
         Method for importing document from path.
         """
         pass
 
-    def embed_text(text: str) -> None:
+    def embed_text(self, text: str) -> None:
         """
         Method for embedding text.
         """
         pass
 
-    def run_clustering() -> None:
+    def run_clustering(self) -> None:
         """
         Method for running clustering.
         """
