@@ -29,3 +29,9 @@ class Organizer(object):
         Method for embedding text.
         """
         pass
+
+    def run_clustering() -> None:
+        """
+        Method for running clustering.
+        """
+        pass
