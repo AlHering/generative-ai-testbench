@@ -37,3 +37,9 @@ class Organizer(object):
         Method for running clustering.
         """
         pass
+
+    def choose_topics(self) -> None:
+        """
+        Method for choosing topics based on clustered texts or documents.
+        """
+        pass
