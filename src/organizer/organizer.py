@@ -7,7 +7,7 @@
 """
 
 
-class Librarian(object):
+class Organizer(object):
     """
     Class, representing an LLM-based organizer agent to collect, embed, cluster and organize texts or documents.
     """
