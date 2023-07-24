@@ -196,9 +196,9 @@ def run_example_process(self) -> None:
         temperature=0
     )
     agent_wrapper = ImageInterogationAgent(llm)
+
     print("STARTING PROCESS")
     img_path = os.path.join(cfg.PATHS.DATA_PATH, "assets", "Parsons_PR.jpg")
-
     print("="*50)
     print("STEP 1")
     user_question = "generate a caption for this image?"
