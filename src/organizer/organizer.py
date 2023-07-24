@@ -5,9 +5,10 @@
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
+from src.librarian.librarian import Librarian
 
 
-class Organizer(object):
+class Organizer(Librarian):
     """
     Class, representing an LLM-based organizer agent to collect, embed, cluster and organize texts or documents.
     """
@@ -15,20 +16,6 @@ class Organizer(object):
     def __init__(self) -> None:
         """
         Initiation method.
-        """
-        pass
-
-    def import_document(self, path: str) -> None:
-        """
-        Method for importing document from path.
-        :param path: Path to document.
-        """
-        pass
-
-    def embed_text(self, text: str) -> None:
-        """
-        Method for embedding text.
-        :param text: Text to embed.
         """
         pass
 
