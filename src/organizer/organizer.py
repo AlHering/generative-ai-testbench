@@ -13,11 +13,18 @@ class Organizer(Librarian):
     Class, representing an LLM-based organizer agent to collect, embed, cluster and organize texts or documents.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, profile: dict) -> None:
         """
         Initiation method.
+        :param profile: Profile, configuring a organizer agent. The profile should be a nested dictionary of the form
+            'chromadb_settings': ChromaDB Settings.
+            'embedding':
+                'embedding_model': Embedding model.
+                'embedding_function': Embedding function.
+            'retrieval': 
+                'source_chunks': Source chunks.
         """
-        pass
+        super().__init__(profile)
 
     def run_clustering(self) -> None:
         """
