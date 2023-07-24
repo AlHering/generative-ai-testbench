@@ -127,40 +127,82 @@ class ObjectDetectionTool(BaseTool):
         raise NotImplementedError("This tool does not support async")
 
 
-def get_interogator_agent():
-    tools = [ImageInterogationTool(), ObjectDetectionTool()]
+class ImageInterogationAgent(BaseMultiActionAgent):
+    """
+    Class, representing an Image Interogation Agent.
+    """
 
-    conversational_memory = ConversationBufferWindowMemory(
-        memory_key='chat_history',
-        k=5,
-        return_messages=True
-    )
+    def __init__(self, general_llm: Any) -> None:
+        """
+        Initiation method.
+        :param general_llm: General LLM.
+        """
+        self.general_llm = general_llm
+        self.tools = self._initiate_tools()
+        self.conversational_memory = ConversationBufferWindowMemory(
+            memory_key='chat_history',
+            k=5,
+            return_messages=True
+        )
+        self.agent = initialize_agent(
+            agent="chat-conversational-react-description",
+            tools=self.tools,
+            llm=self.general_llm,
+            max_iterations=5,
+            verbose=True,
+            memory=self.conversational_memory,
+            early_stopping_method='generate'
+        )
+        self.run = self.agent.run
 
+    """
+    Tools
+    """
+
+    def _initiate_tools(self) -> List[Tool]:
+        """
+        Internal method for initiating tools.
+        """
+        return [
+            self._initiate_general_llm_tool,
+            ImageInterogationTool(),
+            ObjectDetectionTool()
+        ]
+
+    def _initiate_general_llm_tool(self) -> Tool:
+        """
+        Internal method for initiating general LLM tool.
+        """
+        promt_template = PromptTemplate(
+            input_variables=["input"],
+            template="{input}"
+        )
+        llm_chain = LLMChain(llm=self.general_llm, prompt=promt_template)
+
+        return Tool(
+            name="General Language Model",
+            func=llm_chain.run,
+            description="Use this tool for general purpose question answering and logic."
+        )
+
+
+def run_example_process(self) -> None:
+    """
+    Method for running example process.
+    """
     llm = LlamaCpp(
         model_path=os.path.join(cfg.PATHS.TEXTGENERATION_MODEL_PATH,
                                 "orca_mini_7B-GGML/orca-mini-7b.ggmlv3.q4_1.bin"),
         temperature=0
     )
-
-    return initialize_agent(
-        agent="chat-conversational-react-description",
-        tools=tools,
-        llm=llm,
-        max_iterations=5,
-        verbose=True,
-        memory=conversational_memory,
-        early_stopping_method='generate'
-    )
-
-
-def run_process():
+    agent_wrapper = ImageInterogationAgent(llm)
     print("STARTING PROCESS")
     img_path = os.path.join(cfg.PATHS.DATA_PATH, "assets", "Parsons_PR.jpg")
-    agent = get_interogator_agent()
+
     print("="*50)
     print("STEP 1")
     user_question = "generate a caption for this image?"
-    response = agent.run(
+    response = agent_wrapper.run(
         f"{user_question}, this is the image path: {img_path}")
     print(response)
 
@@ -168,13 +210,13 @@ def run_process():
     print("STEP 2")
 
     user_question = "Please tell me what are the items present in the image."
-    response = agent.run(
+    response = agent_wrapper.run(
         f'{user_question}, this is the image path: {img_path}')
     print(response)
 
     print("="*50)
     print("STEP 3")
     user_question = "Please tell me the bounding boxes of all detected objects in the image."
-    response = agent.run(
+    response = agent_wrapper.run(
         f'{user_question}, this is the image path: {img_path}')
     print(response)
