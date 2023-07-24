@@ -31,14 +31,20 @@ INTEROGATION_MODELS = {
 
 
 class ImageInterogationTool(BaseTool):
+    """
+    Image Interogation Tools class.
+    """
     name = "Image interogator"
-    description = "Use this tool when given the path to an image that you would like to be described. " \
-                  "It will return a simple caption describing the image."
+    description = "Use this tool when given the path to an image that you would like to be described. It will return a simple caption describing the image."
 
-    def _run(self, img_path, model):
+    def _run(self, img_path, model="blip-large"):
+        """
+        Runner method of tool for getting a caption for a given image.
+        :param img_path: Path to image file.
+        :param model: Prefered model for interogation. Defaults to 'blip-large'.
+        """
         image = Image.open(img_path).convert("RGB")
 
-        model_name = "Salesforce/blip-image-captioning-large"
         device = "cpu"  # cuda#
         self.dtype = torch.float16 if device == 'cuda' else torch.float32
 
@@ -62,15 +68,18 @@ class ImageInterogationTool(BaseTool):
 
         return caption
 
-    def _arun(self, query: str):
-        raise NotImplementedError("This tool does not support async")
+    def _arun(self, query: str) -> None:
+        """
+        Asynchronous runner method. Not Implemented.
+        :param query: Base paramenter.
+        :raises NotImplementedError: Async method is not supported.
+        """
+        raise NotImplementedError("This tool does not support async.")
 
 
 class ObjectDetectionTool(BaseTool):
     name = "Object detector"
-    description = "Use this tool when given the path to an image that you would like to detect objects. " \
-                  "It will return a list of all detected objects. Each element in the list in the format: " \
-                  "[x1, y1, x2, y2] class_name confidence_score."
+    description = "Use this tool when given the path to an image that you would like to detect objects. It will return a list of all detected objects. Each element in the list in the format: [x1, y1, x2, y2] class_name confidence_score."
 
     def _run(self, img_path):
         image = Image.open(img_path).convert("RGB")
