@@ -18,6 +18,10 @@ from langchain import PromptTemplate, LLMChain
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
+from typing import List, Any
+from langchain.agents import Tool, AgentExecutor, BaseMultiActionAgent
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain, LLMMathChain
 
 
 # Taken from https://github.com/pharmapsychotic/clip-interrogator
@@ -123,48 +127,36 @@ class ObjectDetectionTool(BaseTool):
         raise NotImplementedError("This tool does not support async")
 
 
-# initialize the agent
-tools = [ImageInterogationTool(), ObjectDetectionTool()]
+def get_interogator_agent():
+    tools = [ImageInterogationTool(), ObjectDetectionTool()]
 
-conversational_memory = ConversationBufferWindowMemory(
-    memory_key="chat_history",
-    k=5,
-    return_messages=True
-)
+    conversational_memory = ConversationBufferWindowMemory(
+        memory_key='chat_history',
+        k=5,
+        return_messages=True
+    )
 
-# Setup prompting
-promt_template = """
-Question: {question}
-Answer: Please devide your answer in multiple steps and explain each step to be sure we have the right answer.
-"""
-prompt = PromptTemplate(template=promt_template, input_variables=["question"])
+    llm = LlamaCpp(
+        model_path=os.path.join(cfg.PATHS.TEXTGENERATION_MODEL_PATH,
+                                "orca_mini_7B-GGML/orca-mini-7b.ggmlv3.q4_1.bin"),
+        temperature=0
+    )
 
-# Instance of callback manager for token-wise streaming
-callback_manager = CallbackManager(
-    [StreamingStdOutCallbackHandler()])
-
-# Setup central LLM
-llm = LlamaCpp(
-    model_path=os.path.join(cfg.PATHS.TEXTGENERATION_MODEL_PATH,
-                            "orca_mini_7B-GGML/orca-mini-7b.ggmlv3.q4_1.bin"),
-    n_ctx=1024,
-    callback_manager=callback_manager,
-    verbose=True)
-
-agent = initialize_agent(
-    agent="chat-conversational-react-description",
-    tools=tools,
-    llm=llm,
-    max_iterations=5,
-    verbose=True,
-    memory=conversational_memory,
-    early_stopping_method="generate"
-)
+    return initialize_agent(
+        agent="chat-conversational-react-description",
+        tools=tools,
+        llm=llm,
+        max_iterations=5,
+        verbose=True,
+        memory=conversational_memory,
+        early_stopping_method='generate'
+    )
 
 
 def run_process():
     print("STARTING PROCESS")
     img_path = os.path.join(cfg.PATHS.DATA_PATH, "assets", "Parsons_PR.jpg")
+    agent = get_interogator_agent()
     print("="*50)
     print("STEP 1")
     user_question = "generate a caption for this image?"
