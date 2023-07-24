@@ -78,10 +78,17 @@ class ImageInterogationTool(BaseTool):
 
 
 class ObjectDetectionTool(BaseTool):
+    """
+    Object Detection Tool class
+    """
     name = "Object detector"
     description = "Use this tool when given the path to an image that you would like to detect objects. It will return a list of all detected objects. Each element in the list in the format: [x1, y1, x2, y2] class_name confidence_score."
 
     def _run(self, img_path):
+        """
+        Runner method for object detection.
+        :param img_path: Path to image file.
+        """
         image = Image.open(img_path).convert("RGB")
 
         processor = DetrImageProcessor.from_pretrained(
@@ -108,6 +115,11 @@ class ObjectDetectionTool(BaseTool):
         return detections
 
     def _arun(self, query: str):
+        """
+        Asynchronous runner method. Not Implemented.
+        :param query: Base paramenter.
+        :raises NotImplementedError: Async method is not supported.
+        """
         raise NotImplementedError("This tool does not support async")
 
 
