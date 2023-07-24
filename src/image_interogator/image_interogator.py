@@ -145,7 +145,7 @@ class ImageInterogationAgent(BaseMultiActionAgent):
             return_messages=True
         )
         self.agent = initialize_agent(
-            agent="chat-conversational-react-description",
+            agent="zero-shot-react-description",
             tools=self.tools,
             llm=self.general_llm,
             max_iterations=5,
