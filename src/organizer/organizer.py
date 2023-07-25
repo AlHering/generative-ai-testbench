@@ -31,17 +31,17 @@ class Organizer(Librarian):
                 'source_chunks': Source chunks.
         """
         super().__init__(profile)
-        self.topic_prompt_template = PromptTemplate(
+        self.prompt_template = PromptTemplate(
             template="""
                 You are a classification AI. You will recieve a list of documents. The documents are delimited by ####. 
-                Your task is to find a single common topic which descibes all documents. The topic should be a single sentence.
+                {task}
 
                 DOCUMENTS:
                 {document_list}
 
-                YOUR TOPIC:
+                YOUR RESPONSE:
             """,
-            input_variables=["document_list"]
+            input_variables=["task", "document_list"]
         )
 
     # Override
@@ -86,6 +86,10 @@ class Organizer(Librarian):
         for cluster_id in clustered_df["cluster"].unique():
             docs = list(
                 clustered_df.iloc[clustered_df.cluster == cluster_id]["document"])
+            prompt = self.prompt_template(
+                task="Your task is to find a single common topic which descibes all documents. The topic should be a single sentence.",
+                document_list=" #### ".join(docs)
+            )
 
     def summarize_topics(self) -> None:
         """
