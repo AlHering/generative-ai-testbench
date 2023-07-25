@@ -7,8 +7,9 @@
 """
 from typing import List, Tuple, Optional, Any
 import pandas as pd
+import numpy as np
 from pandas import Series
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, DBSCAN
 from src.librarian.librarian import Librarian
 
 
@@ -58,22 +59,8 @@ class Organizer(Librarian):
         embedded_docs_df = pd.DataFrame(
             Series(entry) for entry in embedded_docs["embeddings"])
 
-        {"kmeans": self._cluster_with_kmeans, "dbscan": self._cluster_with_dbscan}[
-            method](**method_kwargs)
-
-    def _cluster_with_kmeans(self, **kwargs: Optional[Any]) -> None:
-        """
-        Internal method for running clustering based on kmeans.
-        :param kwargs: Arbitrary keyword arguments, containing kmeans hyperparameters.
-        """
-        pass
-
-    def _cluster_with_dbscan(self, **kwargs: Optional[Any]) -> None:
-        """
-        Internal method for running clustering based on dbscan.
-        :param kwargs: Arbitrary keyword arguments, containing kmeans hyperparameters.
-        """
-        pass
+        clusters = {"kmeans": KMeans, "dbscan": DBSCAN}[
+            method](**method_kwargs).fit(embedded_docs_df).labels_
 
     def choose_topics(self) -> None:
         """
