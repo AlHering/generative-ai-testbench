@@ -5,10 +5,10 @@
 *            (c) 2023 Alexander Hering             *
 ****************************************************
 """
-from typing import List, Tuple
+from typing import List, Tuple, Optional, Any
 import pandas as pd
 from pandas import Series
-
+from sklearn.cluster import KMeans
 from src.librarian.librarian import Librarian
 
 
@@ -48,13 +48,32 @@ class Organizer(Librarian):
                                          "raw": document_part})
         return contents, metadata_entries
 
-    def run_clustering(self) -> None:
+    def run_clustering(self, method: str = "kmeans", method_kwargs: dict = None) -> None:
         """
         Method for running clustering.
+        :param method: Method/Algorithm for running clustering. Defaults to 'kmeans'.
+        :param method_kwargs: Keyword arguments (usually hyperparameters) for running the clustering method.
         """
         embedded_docs = self.vector_db.get(include=["embeddings", "metadatas"])
         embedded_docs_df = pd.DataFrame(
             Series(entry) for entry in embedded_docs["embeddings"])
+
+        {"kmeans": self._cluster_with_kmeans, "dbscan": self._cluster_with_dbscan}[
+            method](**method_kwargs)
+
+    def _cluster_with_kmeans(self, **kwargs: Optional[Any]) -> None:
+        """
+        Internal method for running clustering based on kmeans.
+        :param kwargs: Arbitrary keyword arguments, containing kmeans hyperparameters.
+        """
+        pass
+
+    def _cluster_with_dbscan(self, **kwargs: Optional[Any]) -> None:
+        """
+        Internal method for running clustering based on dbscan.
+        :param kwargs: Arbitrary keyword arguments, containing kmeans hyperparameters.
+        """
+        pass
 
     def choose_topics(self) -> None:
         """
