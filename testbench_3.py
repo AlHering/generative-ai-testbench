@@ -17,16 +17,18 @@ from src.organizer.organizer import Organizer, Librarian
 from src.utility.langchain_utility import Settings
 # Embedding Models: https://huggingface.co/spaces/mteb/leaderboard
 
+
 llm = LlamaCpp(
     model_path=os.path.join(cfg.PATHS.TEXTGENERATION_MODEL_PATH,
                             "orca_mini_7B-GGML/orca-mini-7b.ggmlv3.q4_1.bin"),
     verbose=True)
-
-
 e5_large_v3_path = os.path.join(
     cfg.PATHS.TEXTGENERATION_MODEL_PATH, "intfloat_e5-large-v2")
-tokenizer = AutoTokenizer.from_pretrained(e5_large_v3_path)
-model = AutoModel.from_pretrained(e5_large_v3_path)
+
+
+tokenizer = AutoTokenizer.from_pretrained(
+    e5_large_v3_path, local_files_only=True)
+model = AutoModel.from_pretrained(e5_large_v3_path, local_files_only=True)
 
 
 data_path = os.path.join(cfg.PATHS.DATA_PATH, "testbench3")
@@ -40,7 +42,7 @@ class T5EmbeddingFunction(EmbeddingFunction):
     (https://huggingface.co/intfloat/e5-large-v2)
     """
 
-    def __call__(self, texts: Documents) -> Embeddings:
+    def embed_documents(self, texts: Documents) -> Embeddings:
         """
         Method handling embedding.
         """
@@ -76,7 +78,6 @@ librarian = Librarian({
     "embedding_function": T5EmbeddingFunction,
     "retrieval_source_chunks": 1
 })
-
 
 """organizer = Organizer({
     "llm": llm,
