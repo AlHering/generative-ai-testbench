@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 from pandas import Series
 from sklearn.cluster import KMeans, DBSCAN
+from langchain.prompts import PromptTemplate
 from src.librarian.librarian import Librarian
 
 
@@ -30,6 +31,18 @@ class Organizer(Librarian):
                 'source_chunks': Source chunks.
         """
         super().__init__(profile)
+        self.topic_prompt_template = PromptTemplate(
+            template="""
+                You are a classification AI. You will recieve a list of documents. The documents are delimited by ####. 
+                Your task is to find a single common topic which descibes all documents. The topic should be a single sentence.
+
+                DOCUMENTS:
+                {document_list}
+
+                YOUR TOPIC:
+            """,
+            input_variables=["document_list"]
+        )
 
     # Override
     def enrich_content_batches(self, file_paths: List[str], content_batches: List[list]) -> Tuple[list, list]:
@@ -65,7 +78,16 @@ class Organizer(Librarian):
 
         return pd.DataFrame(zip([entry["raw"] for entry in embedded_docs["metadatas"]], clusters), columns=["document", "cluster"])
 
-    def choose_topics(self) -> None:
+    def choose_topics(self, clustered_df: pd.DataFrame) -> None:
+        """
+        Method for choosing topics based on clustered texts or documents.
+        :param clustered_df: DataFrame, containing clustering results.
+        """
+        for cluster_id in clustered_df["cluster"].unique():
+            docs = list(
+                clustered_df.iloc[clustered_df.cluster == cluster_id]["document"])
+
+    def summarize_topics(self) -> None:
         """
         Method for choosing topics based on clustered texts or documents.
         """
