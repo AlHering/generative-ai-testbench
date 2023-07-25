@@ -110,3 +110,22 @@ class Organizer(Librarian):
                 document_list=" #### ".join(docs)
             )
             summaries[cluster_id] = self.llm(prompt)
+
+    def handle_clusters(self, clustered_df: pd.DataFrame, task: str) -> dict:
+        """
+        Method for issueing a task on the documents of each cluster.
+        :param clustered_df: DataFrame, containing clustering results.
+        :param task: Task description relative to a list of documents as an english text.
+            Example: 'Your task is to choose and summarize the most funny document.'
+        :return: Dictionary containing the task result for each cluster und the cluster ID as key.
+        """
+        result = {}
+        for cluster_id in clustered_df["cluster"].unique():
+            docs = list(
+                clustered_df.iloc[clustered_df.cluster == cluster_id]["document"])
+            prompt = self.prompt_template(
+                task=task,
+                document_list=" #### ".join(docs)
+            )
+            result[cluster_id] = self.llm(prompt)
+        return result
