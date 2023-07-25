@@ -84,16 +84,7 @@ class Organizer(Librarian):
         :param clustered_df: DataFrame, containing clustering results.
         :return: Dictionary, mapping topics under cluster IDs.
         """
-        topics = {}
-        for cluster_id in clustered_df["cluster"].unique():
-            docs = list(
-                clustered_df.iloc[clustered_df.cluster == cluster_id]["document"])
-            prompt = self.prompt_template(
-                task="Your task is to find a single common topic which descibes all documents. The topic should be a single sentence.",
-                document_list=" #### ".join(docs)
-            )
-            topics[cluster_id] = self.llm(prompt)
-        return topics
+        return self.handle_clusters(clustered_df, "Your task is to find a single common topic which descibes all documents. The topic should be a single sentence.")
 
     def summarize_topics(self, clustered_df: pd.DataFrame) -> dict:
         """
@@ -101,19 +92,11 @@ class Organizer(Librarian):
         :param clustered_df: DataFrame, containing clustering results.
         :return: Dictionary, mapping summaries under cluster IDs.
         """
-        summaries = {}
-        for cluster_id in clustered_df["cluster"].unique():
-            docs = list(
-                clustered_df.iloc[clustered_df.cluster == cluster_id]["document"])
-            prompt = self.prompt_template(
-                task="Write a summary for the documents.",
-                document_list=" #### ".join(docs)
-            )
-            summaries[cluster_id] = self.llm(prompt)
+        return self.handle_clusters(clustered_df, "Write a summary for the documents.")
 
-    def handle_clusters(self, clustered_df: pd.DataFrame, task: str) -> dict:
+    def handle_clustered_documents(self, clustered_df: pd.DataFrame, task: str) -> dict:
         """
-        Method for issueing a task on the documents of each cluster.
+        Method for issueing a task on clustered documents.
         :param clustered_df: DataFrame, containing clustering results.
         :param task: Task description relative to a list of documents as an english text.
             Example: 'Your task is to choose and summarize the most funny document.'
