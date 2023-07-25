@@ -15,9 +15,8 @@ from transformers import AutoTokenizer, AutoModel
 from chromadb.api.types import Documents, EmbeddingFunction, Embeddings
 from src.organizer.organizer import Organizer, Librarian
 from src.utility.langchain_utility import Settings
-# Embedding Models: https://huggingface.co/spaces/mteb/leaderboard
 
-
+# Model used: https://huggingface.co/TheBloke/orca_mini_7B-GGML
 llm = LlamaCpp(
     model_path=os.path.join(cfg.PATHS.TEXTGENERATION_MODEL_PATH,
                             "orca_mini_7B-GGML/orca-mini-7b.ggmlv3.q4_1.bin"),
@@ -25,7 +24,7 @@ llm = LlamaCpp(
 e5_large_v3_path = os.path.join(
     cfg.PATHS.TEXTGENERATION_MODEL_PATH, "intfloat_e5-large-v2")
 
-
+# Model used: https://huggingface.co/spaces/mteb/leaderboard
 tokenizer = AutoTokenizer.from_pretrained(
     e5_large_v3_path, local_files_only=True)
 model = AutoModel.from_pretrained(e5_large_v3_path, local_files_only=True)
@@ -78,6 +77,7 @@ librarian = Librarian({
     "embedding_function": T5EmbeddingFunction,
     "retrieval_source_chunks": 1
 })
+
 
 """organizer = Organizer({
     "llm": llm,
