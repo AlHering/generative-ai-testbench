@@ -78,11 +78,13 @@ class Organizer(Librarian):
 
         return pd.DataFrame(zip([entry["raw"] for entry in embedded_docs["metadatas"]], clusters), columns=["document", "cluster"])
 
-    def choose_topics(self, clustered_df: pd.DataFrame) -> None:
+    def choose_topics(self, clustered_df: pd.DataFrame) -> dict:
         """
         Method for choosing topics based on clustered texts or documents.
         :param clustered_df: DataFrame, containing clustering results.
+        :return: Dictionary, mapping topics under cluster IDs.
         """
+        topics = {}
         for cluster_id in clustered_df["cluster"].unique():
             docs = list(
                 clustered_df.iloc[clustered_df.cluster == cluster_id]["document"])
@@ -90,9 +92,21 @@ class Organizer(Librarian):
                 task="Your task is to find a single common topic which descibes all documents. The topic should be a single sentence.",
                 document_list=" #### ".join(docs)
             )
+            topics[cluster_id] = self.llm(prompt)
+        return topics
 
-    def summarize_topics(self) -> None:
+    def summarize_topics(self, clustered_df: pd.DataFrame) -> dict:
         """
-        Method for choosing topics based on clustered texts or documents.
+        Method for summarizing clustered texts or documents.
+        :param clustered_df: DataFrame, containing clustering results.
+        :return: Dictionary, mapping summaries under cluster IDs.
         """
-        pass
+        summaries = {}
+        for cluster_id in clustered_df["cluster"].unique():
+            docs = list(
+                clustered_df.iloc[clustered_df.cluster == cluster_id]["document"])
+            prompt = self.prompt_template(
+                task="Write a summary for the documents.",
+                document_list=" #### ".join(docs)
+            )
+            summaries[cluster_id] = self.llm(prompt)
