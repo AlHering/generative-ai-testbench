@@ -23,6 +23,7 @@ class Librarian(object):
         """
         Initiation method.
         :param profile: Profile, configuring a librarian agent. The profile should be a nested dictionary of the form
+            'llm': General LLM used for interaction.
             'chromadb_settings': ChromaDB Settings.
             'embedding':
                 'embedding_model': Embedding model.
@@ -35,7 +36,7 @@ class Librarian(object):
             profile["chromadb_settings"], profile["embedding"]["embedding_function"])
         self.retriever = self.vector_db.as_retriever(
             search_kwargs={"k": profile["retrieval"]["source_chunks"]})
-        self.llm = None
+        self.llm = profile["llm"]
 
     def reload_folder(self, folder: str) -> None:
         """
