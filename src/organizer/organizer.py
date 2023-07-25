@@ -49,11 +49,12 @@ class Organizer(Librarian):
                                          "raw": document_part})
         return contents, metadata_entries
 
-    def run_clustering(self, method: str = "kmeans", method_kwargs: dict = None) -> None:
+    def run_clustering(self, method: str = "kmeans", method_kwargs: dict = None) -> pd.DataFrame:
         """
         Method for running clustering.
         :param method: Method/Algorithm for running clustering. Defaults to 'kmeans'.
         :param method_kwargs: Keyword arguments (usually hyperparameters) for running the clustering method.
+        :return: Pandas DataFrame, containing text under column "document" and the cluster label under "cluster".
         """
         embedded_docs = self.vector_db.get(include=["embeddings", "metadatas"])
         embedded_docs_df = pd.DataFrame(
@@ -61,6 +62,8 @@ class Organizer(Librarian):
 
         clusters = {"kmeans": KMeans, "dbscan": DBSCAN}[
             method](**method_kwargs).fit(embedded_docs_df).labels_
+
+        return pd.DataFrame(zip([entry["raw"] for entry in embedded_docs["metadatas"]], clusters), columns=["document", "cluster"])
 
     def choose_topics(self) -> None:
         """
