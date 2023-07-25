@@ -6,6 +6,9 @@
 ****************************************************
 """
 from typing import List, Tuple
+import pandas as pd
+from pandas import Series
+
 from src.librarian.librarian import Librarian
 
 
@@ -49,7 +52,9 @@ class Organizer(Librarian):
         """
         Method for running clustering.
         """
-        pass
+        embedded_docs = self.vector_db.get(include=["embeddings", "metadatas"])
+        embedded_docs_df = pd.DataFrame(
+            Series(entry) for entry in embedded_docs["embeddings"])
 
     def choose_topics(self) -> None:
         """
