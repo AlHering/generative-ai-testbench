@@ -86,7 +86,6 @@ DOCUMENT_LOADERS = {
     ".doc": document_loaders.UnstructuredWordDocumentLoader,
     ".docx": document_loaders.UnstructuredWordDocumentLoader,
     ".enex": document_loaders.EverNoteLoader,
-    ".eml": document_loaders.MyElmLoader,
     ".epub": document_loaders.UnstructuredEPubLoader,
     ".html": document_loaders.UnstructuredHTMLLoader,
     ".md": document_loaders.UnstructuredMarkdownLoader,
