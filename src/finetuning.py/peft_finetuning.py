@@ -6,6 +6,7 @@
 ****************************************************
 """
 import os
+import sys
 from typing import Optional, List, Any, Tuple
 import torch
 from torch.utils.data import DataLoader
@@ -16,7 +17,8 @@ from transformers import default_data_collator, get_linear_schedule_with_warmup
 from peft import get_peft_config, get_peft_model, PeftModel, PeftConfig
 from datasets import load_dataset
 import tqdm
-from src.configuration import configuration as cfg
+OUTPUT_DIR = os.path.abspath(os.path.join(
+    __file__, os.pardir, os.pardir, os.pardir, "data", "finetuning", "peft_output"))
 
 
 def example_process(model_repo: str = "smangrul/twitter_complaints_bigscience_T0_3B_LORA_SEQ_2_SEQ_LM",
@@ -24,8 +26,7 @@ def example_process(model_repo: str = "smangrul/twitter_complaints_bigscience_T0
                     text_column: str = "Tweet text",
                     label_column: str = "text_label",
                     batch_size: int = 8,
-                    output_dir: str = os.path.join(
-                        cfg.PATHS.DATA_PATH, "peft_training", "output"),
+                    output_dir: str = OUTPUT_DIR,
                     memory_distribution: dict = {0: "6GIB", 1: "0GIB", 2: "0GIB", 3: "0GIB", 4: "0GIB", "cpu": "18GB"}) -> None:
     """
     Function, containing the example process (https://www.leewayhertz.com/parameter-efficient-fine-tuning/).
