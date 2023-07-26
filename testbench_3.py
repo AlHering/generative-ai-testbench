@@ -35,6 +35,11 @@ if not os.path.exists(data_path):
     os.makedirs(data_path)
 
 
+# Corpus used: https://www.kaggle.com/datasets/sbhatti/news-articles-corpus
+corpus_path = os.path.join(
+    cfg.PATHS.DATA_PATH, "library", "sbhatti_news-articles-corpus")
+
+
 class T5EmbeddingFunction(EmbeddingFunction):
     """
     EmbeddingFunction utilizing the "intfloat_e5-large-v2" model.
@@ -78,6 +83,10 @@ librarian = Librarian({
     "retrieval_source_chunks": 1
 })
 
+news_corpus = []
+for root, dirs, files in os.walk(os.path.join(corpus_path, "001"), topdown=True):
+    news_corpus.extend([open(os.path.join(root, file), "r", encoding="utf-8").read()
+                       for file in files if file.lower().endswith(".txt")])
 
 """organizer = Organizer({
     "llm": llm,
