@@ -6,12 +6,13 @@
 ****************************************************
 """
 import os
-from typing import Any
+from typing import Any, List
 from src.configuration import configuration as cfg
 from langchain.llms import LlamaCpp
 import torch.nn.functional as F
 from torch import Tensor
 from transformers import AutoTokenizer, AutoModel
+from langchain.embeddings import HuggingFaceEmbeddings, SentenceTransformerEmbeddings
 from chromadb.api.types import Documents, EmbeddingFunction, Embeddings
 from src.organizer.organizer import Organizer, Librarian
 from src.utility.langchain_utility import Settings
@@ -49,11 +50,9 @@ class T5EmbeddingFunction(EmbeddingFunction):
     def embed_documents(self, texts: Documents) -> Embeddings:
         """
         Method handling embedding.
+        :param texts: Texts to embed.
         """
         # Taken from https://huggingface.co/intfloat/e5-large-v2 and adjusted
-        batch_dict = tokenizer(texts, max_length=512,
-                               padding=True, truncation=True, return_tensors='pt')
-
         # Tokenize the input texts
         batch_dict = tokenizer(texts, max_length=512,
                                padding=True, truncation=True, return_tensors='pt')
@@ -64,8 +63,24 @@ class T5EmbeddingFunction(EmbeddingFunction):
 
         # normalize embeddings
         embeddings = F.normalize(embeddings, p=2, dim=1)
-        scores = (embeddings[:2] @ embeddings[2:].T) * 100
-        print(scores.tolist())
+        return embeddings.tolist()
+
+    def embed_query(self, query: str) -> Embeddings:
+        """
+        Method for embedding query.
+        :param query: Query.
+        :return: Query embedding.
+        """
+        batch_dict = tokenizer(query, max_length=512,
+                               padding=True, truncation=True, return_tensors='pt')
+
+        outputs = model(**batch_dict)
+        embeddings = self.average_pool(outputs.last_hidden_state,
+                                       batch_dict['attention_mask'])
+
+        # normalize embeddings
+        embeddings = F.normalize(embeddings, p=2, dim=1)
+        return embeddings.tolist()
 
     def average_pool(self, last_hidden_states: Tensor, attention_mask: Tensor) -> Tensor:
         """
@@ -79,14 +94,13 @@ class T5EmbeddingFunction(EmbeddingFunction):
 librarian = Librarian({
     "llm": llm,
     "chromadb_settings": Settings(persist_directory=os.path.join(data_path, "librarian_db")),
-    "embedding_function": T5EmbeddingFunction,
+    "embedding_function": T5EmbeddingFunction(),
     "retrieval_source_chunks": 1
 })
 
-news_corpus = []
-for root, dirs, files in os.walk(os.path.join(corpus_path, "001"), topdown=True):
-    news_corpus.extend([open(os.path.join(root, file), "r", encoding="utf-8").read()
-                       for file in files if file.lower().endswith(".txt")])
+librarian.reload_folder(corpus_path)
+
+print(librarian.query("What is the police concerned by?"))
 
 """organizer = Organizer({
     "llm": llm,
