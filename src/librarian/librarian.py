@@ -6,12 +6,25 @@
 ****************************************************
 """
 import os
+import functools
 from typing import List, Tuple, Any
 from langchain.chains import RetrievalQA
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.docstore.document import Document
 from multiprocessing import Pool
 from tqdm import tqdm
 from src.utility import langchain_utility
+
+
+def reload_document(document_path: str) -> Document:
+    """
+    Function for (re)loading document content.
+    :param document_path: Document path.
+    :return: Document object.
+    """
+    res = langchain_utility.DOCUMENT_LOADERS[os.path.splitext(document_path)[
+        1]](document_path).load()
+    return res[0] if isinstance(res, list) and len(res) == 1 else res
 
 
 class Librarian(object):
@@ -27,6 +40,8 @@ class Librarian(object):
             'chromadb_settings': ChromaDB Settings.
             'embedding_function': Embedding function.
             'retrieval_source_chunks': Source chunks for retrieval.
+            'splitting_chunks': Chunk size for text splitting. Optional.
+            'splitting_overlap': Overlap for text splitting. Optional.
         """
         self.profile = profile
         self.vector_db = langchain_utility.get_or_create_chromadb(
@@ -40,55 +55,40 @@ class Librarian(object):
         Method for (re)loading folder contents.
         :param folder: Folder path.
         """
+        document_paths = []
         documents = []
-        content_batches = []
         for root, dirs, files in os.walk(folder, topdown=True):
-            for file in files:
-                _, ext = os.path.splitext(file)
-                if any(loader_option.endswith(ext) for loader_option in langchain_utility.DOCUMENT_LOADERS):
-                    documents.append((os.path.join(root, file), ext))
+            document_paths.extend([os.path.join(root, file) for file in files if any(file.lower().endswith(
+                supported_extension) for supported_extension in langchain_utility.DOCUMENT_LOADERS)])
+
         with Pool(processes=os.cpu_count()) as pool:
-            with tqdm(total=len(documents), desc="(Re)loading folder contents...", ncols=80) as progress_bar:
-                for index, document_contents in enumerate(pool.imap_unordered(self.reload_document, documents)):
-                    content_batches.append(document_contents)
+            with tqdm(total=len(document_paths), desc="(Re)loading folder contents...", ncols=80) as progress_bar:
+                for index, loaded_document in enumerate(pool.imap(reload_document, document_paths)):
+                    documents.append(loaded_document)
                     progress_bar.update(index)
-        contents, metadata_entries = self.enrich_content_batches(
-            content_batches)
-        self.add_contents_to_db(contents, metadata_entries)
 
-    def reload_document(self, document_path: str, extension: str = None) -> List[Document]:
-        """
-        Method for (re)loading document content.
-        :param document_path: Document path.
-        :param extension: Extension of file.
-            Defaults to None in which case extension is derived from document path.
-        """
-        return langchain_utility.DOCUMENT_LOADERS[extension if extension is not None else os.path.splitext(document_path)[1]](document_path).load()
+        if "splitting_chunks" in self.profile:
+            documents = self.split_documents(documents)
+        self.add_documents_to_db(documents)
 
-    def enrich_content_batches(self, file_paths: List[str], content_batches: List[list]) -> Tuple[list, list]:
+    def split_documents(self, documents: List[Document]) -> List[Document]:
         """
-        Method for creating metadata for file contents.
-        :param file_paths: File paths.
-        :param content_batches: Content batches.
-        :return: Metadata-enriched contents.
+        Method for splitting document content.
+        :param documents: Documents to split.
+        :return: Split documents.
         """
-        contents = []
-        metadata_entries = []
-        for file_index, document_contents in enumerate(content_batches):
-            for part_index, document_part in document_contents:
-                contents.append(document_part)
-                metadata_entries.append({"file_path": file_paths[file_index],
-                                         "part": part_index})
-        return contents, metadata_entries
+        return RecursiveCharacterTextSplitter(
+            chunk_size=self.profile["splitting_chunks"],
+            chunk_overlap=self.profile["splitting_overlap"],
+            length_function=len).split_documents(documents)
 
-    def add_contents_to_db(self, document_contents: List[str], document_metadata: List[str]) -> None:
+    def add_documents_to_db(self, documents: List[Document]) -> None:
         """
         Method for adding document contents to DB.
-        :param document_contents: Document contents.
-        :param document_metadata: Metadata entries.
+        :param documents: Documents.
         """
         langchain_utility.add_documents_to_chromadb(
-            self.vector_db, document_contents, document_metadata)
+            self.vector_db, documents)
 
     def query(self, query: str, include_source: bool = True, override_llm: Any = None, override_reciever: Any = None) -> Tuple[str, List[Document]]:
         """
