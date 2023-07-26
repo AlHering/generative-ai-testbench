@@ -19,13 +19,13 @@ import tqdm
 from src.configuration import configuration as cfg
 
 
-
 def example_process(model_repo: str = "smangrul/twitter_complaints_bigscience_T0_3B_LORA_SEQ_2_SEQ_LM",
                     dataset_repo: str = "twitter_complaints",
                     text_column: str = "Tweet text",
                     label_column: str = "text_label",
                     batch_size: int = 8,
-                    output_dir: str = os.path.join(cfg.PATHS.DATA_PATH, "peft_training", "output"),
+                    output_dir: str = os.path.join(
+                        cfg.PATHS.DATA_PATH, "peft_training", "output"),
                     memory_distribution: dict = {0: "6GIB", 1: "0GIB", 2: "0GIB", 3: "0GIB", 4: "0GIB", "cpu": "18GB"}) -> None:
     """
     Function, containing the example process (https://www.leewayhertz.com/parameter-efficient-fine-tuning/).
@@ -96,7 +96,7 @@ def example_process(model_repo: str = "smangrul/twitter_complaints_bigscience_T0
 
     # Training
     training_args = TrainingArguments(
-        output_dir=output_dir
+        output_dir=output_dir,
         per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size
     )
@@ -123,6 +123,7 @@ def example_process(model_repo: str = "smangrul/twitter_complaints_bigscience_T0
         print(outputs)
         print(tokenizer.batch_decode(
             outputs.detach().cpu().numpy(), skip_special_tokens=True))
+
 
 if __name__ == "__main__":
     example_process()
