@@ -34,3 +34,4 @@ pyttsx4==3.0.15
 scikit-learn==1.2.2
 evaluate==0.4.0
 dataset==2.13.1
+loralib==0.1.1
