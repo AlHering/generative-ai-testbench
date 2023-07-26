@@ -8,7 +8,9 @@
 import os
 from langchain import document_loaders, document_transformers
 from typing import List, Any, Optional
+import chromadb
 from chromadb.config import Settings
+from langchain.docstore.document import Document
 from pydantic import BaseModel
 from langchain.vectorstores import Chroma
 from src.utility.hashing_utility import hash_text_with_sha256
@@ -55,27 +57,39 @@ def create_collection(chroma_db: Chroma, collection_name: str, metadata: dict = 
         chroma_db.Client().get_or_create_collection(name=collection_name)
 
 
-def add_documents_to_chromadb(chroma_db: Chroma, documents: List[str], docs_metadata: List[str] = None, docs_ids: List[str] = None, collection_name: str = None) -> None:
+def add_documents_to_chromadb(chroma_db: Chroma, documents: List[Document], docs_ids: List[str] = None, collection_name: str = "base") -> None:
     """
     Function for adding documents to ChromaDB.
     :param chroma_db: ChromaDB instance.
     :param documents: List of (preprocessed) documents.
-    :param docs_metadata: List of metadata entries, corresponding to given documents.
-        Defaults to None in which case no metadata is added.
     :param docs_ids: List of ids, corresponding to given documents.
         Defaults to None in which case IDs are derived from hashing documents.
     :param collection_name: Name of collection to add documents to.
         Defaults to None in which case base collection is used.
     """
-    collection = chroma_db.Client().get_or_create_collection(
-        name=collection_name) if collection_name is not None else chroma_db.get()
+    chroma_db.add_documents(documents=documents, ids=docs_ids if docs_ids is not None else [
+                            hash_text_with_sha256(document.page_content) for document in documents])
+
+
+def add_texts_to_chromadb(chroma_db: Chroma, texts: List[str], texts_metadata: List[str] = None, texts_ids: List[str] = None, collection_name: str = None) -> None:
+    """
+    Function for adding texts to ChromaDB.
+    :param chroma_db: ChromaDB instance.
+    :param texts: List of texts.
+    :param texts_metadata: List of metadata entries, corresponding to given texts.
+        Defaults to None in which case no metadata is added.
+    :param texts_ids: List of ids, corresponding to given texts.
+        Defaults to None in which case IDs are derived from hashing texts.
+    :param collection_name: Name of collection to add texts to.
+        Defaults to None in which case base collection is used.
+    """
     kwargs = {
-        "documents": documents,
-        "ids": docs_ids if docs_ids is not None else [hash_text_with_sha256(text) for text in documents]
+        "texts": texts,
+        "ids": texts_ids if texts_ids is not None else [hash_text_with_sha256(text) for text in texts]
     }
-    if docs_metadata is not None:
-        kwargs["metadatas"] = docs_metadata
-    collection.add(**kwargs)
+    if texts_metadata is not None:
+        kwargs["metadatas"] = texts_metadata
+    chroma_db.add_texts(**kwargs)
 
 
 """
