@@ -30,5 +30,5 @@ def hash_text_with_sha256(text: str) -> str:
     :return: Hash.
     """
     h = hashlib.sha256()
-    h.update(bytes(text))
+    h.update(bytes(text, "utf-8"))
     return h.hexdigest()
